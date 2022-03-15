@@ -12,11 +12,14 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(250), nullable=False)
     post = db.relationship('Post', backref='author', lazy=True)
+    cart_item = db.relationship('Cart', backref='cart_user', lazy=True)
+    id_admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, is_admin=False):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
+        self.is_admin = is_admin
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,3 +34,22 @@ class Post(db.Model):
         self.image = image
         self.caption = caption
         self.user_id = user_id
+    
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(200), nullable=False, unique=False)
+    image = db.Column(db.String(300))
+    description = db.Column(db.String(300))
+    price = db.Column(db.Float())
+    cart_item = db.relationship('Cart', backref='cart_product', lazy=True)
+
+    def __init__(self, product_name, image, description, price):
+        self.product_name = product_name
+        self.image = image
+        self.description = description
+        self.price = price
+
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
