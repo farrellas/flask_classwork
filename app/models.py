@@ -1,3 +1,4 @@
+from email.policy import default
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash
@@ -13,13 +14,13 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(250), nullable=False)
     post = db.relationship('Post', backref='author', lazy=True)
     cart_item = db.relationship('Cart', backref='cart_user', lazy=True)
-    id_admin = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, username, email, password, is_admin=False):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
-        self.is_admin = is_admin
+        self.is_admin=is_admin
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,7 +50,19 @@ class Product(db.Model):
         self.description = description
         self.price = price
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "product_name": self.product_name,
+            "image": self.image,
+            "description": self.description,
+            "price": self.price
+        }
+
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    def __init__(self, user_id, product_id):
+        self.user_id = user_id
+        self.product_id = product_id

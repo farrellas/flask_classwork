@@ -5,8 +5,6 @@ from wtforms.validators import DataRequired
 class CreateProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[DataRequired()])
     img_url = StringField('Image URL', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
-    price = FloatField('Price',  validators=[DataRequired()])
+    description = StringField('Caption', validators=[DataRequired()])
+    price = FloatField('Caption', validators=[DataRequired()])
     submit = SubmitField()
-
-

@@ -8,6 +8,10 @@
         <h5 class="card-title">{{ product.product_name }}</h5>
         <p class="card-text">{{ product.description }}</p>
     </div>
+    <form method="POST" action="{{ url_for('shop.addToCart2') }}">
+        <input class="d-none" type="text" name='product_id' value="{{ product.id }}">
+        <button type='submit' class="btn btn-primary">Add To Cart</button>
+    </form>
 </div>
 
 {% endblock content %}
